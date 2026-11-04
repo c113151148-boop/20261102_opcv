@@ -1,4 +1,4 @@
-# UI 元件層 (功能 2) - 終極靜態展開防丟失版
+# UI 元件層 (功能 2)
 
 import cv2
 import numpy as np
