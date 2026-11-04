@@ -1,4 +1,4 @@
-# UI 元件層 (功能 2)
+# UI 元件層 (功能 2) - 終極靜態展開防丟失版
 
 import cv2
 import numpy as np
@@ -17,7 +17,6 @@ def render_color_histogram_section(img_rgb_input: np.ndarray):
     )
 
     if color_space == "原始影像 (RGB)":
-        # 使用獨立 Container 隔絕 DOM 快取
         with st.container():
             col_img, col_hist = st.columns(2)
             with col_img:
@@ -31,11 +30,9 @@ def render_color_histogram_section(img_rgb_input: np.ndarray):
                 st.line_chart(df_hist, color=["#FF0000", "#00FF00", "#0000FF"])
 
     elif color_space == "R/G/B 分離頻道":
-        # 使用獨立 Container 隔絕 DOM 快取
         with st.container():
             r_ch, g_ch, b_ch = cv2.split(img_rgb)
             
-            # 建立三張明確獨立的彩色 3 通道矩陣
             img_r = np.zeros_like(img_rgb)
             img_r[:, :, 0] = r_ch
             
@@ -45,30 +42,32 @@ def render_color_histogram_section(img_rgb_input: np.ndarray):
             img_b = np.zeros_like(img_rgb)
             img_b[:, :, 2] = b_ch
 
-            img_cols = st.columns(3)
-            with img_cols[0]:
-                st.image(img_r, caption="R 通道", use_container_width=True)
-            with img_cols[1]:
-                st.image(img_g, caption="G 通道", use_container_width=True)
-            with img_cols[2]:
-                st.image(img_b, caption="B 通道", use_container_width=True)
+            # 捨棄迴圈，採用最穩定的靜態展開渲染
+            c1, c2, c3 = st.columns(3)
             
-            hist_cols = st.columns(3)
-            for col, ch_data, label_name, hex_color in zip(
-                hist_cols, [r_ch, g_ch, b_ch], ["R", "G", "B"], ["#FF4B4B", "#21C354", "#0068C9"]
-            ):
-                with col:
-                    h_data, _ = np.histogram(ch_data, bins=256, range=[0, 256])
-                    st.caption(f"{label_name} Histogram")
-                    st.bar_chart(h_data, color=hex_color, height=200)
+            with c1:
+                st.empty().image(img_r, caption="R 通道", use_container_width=True)
+                h_r, _ = np.histogram(r_ch, bins=256, range=[0, 256])
+                st.caption("R Histogram")
+                st.bar_chart(h_r, color="#FF4B4B", height=200)
+                
+            with c2:
+                st.empty().image(img_g, caption="G 通道", use_container_width=True)
+                h_g, _ = np.histogram(g_ch, bins=256, range=[0, 256])
+                st.caption("G Histogram")
+                st.bar_chart(h_g, color="#21C354", height=200)
+                
+            with c3:
+                st.empty().image(img_b, caption="B 通道", use_container_width=True)
+                h_b, _ = np.histogram(b_ch, bins=256, range=[0, 256])
+                st.caption("B Histogram")
+                st.bar_chart(h_b, color="#0068C9", height=200)
 
     elif color_space == "YUV 色彩空間":
-        # 使用獨立 Container 隔絕 DOM 快取
         with st.container():
             img_yuv = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2YUV)
             y_ch, u_ch, v_ch = cv2.split(img_yuv)
             
-            # 構建純灰階三通道
             y_gray = np.dstack((y_ch, y_ch, y_ch))
             
             u_norm = cv2.normalize(u_ch, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
@@ -77,19 +76,23 @@ def render_color_histogram_section(img_rgb_input: np.ndarray):
             v_norm = cv2.normalize(v_ch, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
             v_gray = np.dstack((v_norm, v_norm, v_norm))
 
-            img_cols = st.columns(3)
-            with img_cols[0]:
-                st.image(y_gray, caption="Y (亮度)", use_container_width=True)
-            with img_cols[1]:
-                st.image(u_gray, caption="U (色差)", use_container_width=True)
-            with img_cols[2]:
-                st.image(v_gray, caption="V (色差)", use_container_width=True)
-                    
-            hist_cols = st.columns(3)
-            for col, ch_data, label, hex_color in zip(
-                hist_cols, [y_ch, u_ch, v_ch], ["Y (亮度)", "U (色差)", "V (色差)"], ["#808080", "#0068C9", "#FF4B4B"]
-            ):
-                with col:
-                    h_data, _ = np.histogram(ch_data, bins=256, range=[0, 256])
-                    st.caption(f"{label[0]} Histogram")
-                    st.bar_chart(h_data, color=hex_color, height=200)
+            # 捨棄迴圈，採用最穩定的靜態展開渲染
+            c1, c2, c3 = st.columns(3)
+            
+            with c1:
+                st.empty().image(y_gray, caption="Y (亮度)", use_container_width=True)
+                h_y, _ = np.histogram(y_ch, bins=256, range=[0, 256])
+                st.caption("Y (亮度) Histogram")
+                st.bar_chart(h_y, color="#808080", height=200)
+                
+            with c2:
+                st.empty().image(u_gray, caption="U (色差)", use_container_width=True)
+                h_u, _ = np.histogram(u_ch, bins=256, range=[0, 256])
+                st.caption("U (色差) Histogram")
+                st.bar_chart(h_u, color="#0068C9", height=200)
+                
+            with c3:
+                st.empty().image(v_gray, caption="V (色差)", use_container_width=True)
+                h_v, _ = np.histogram(v_ch, bins=256, range=[0, 256])
+                st.caption("V (色差) Histogram")
+                st.bar_chart(h_v, color="#FF4B4B", height=200)
