@@ -1,10 +1,7 @@
 # 核心影像演算法
-
 import math
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
-
 
 class ImageProcessor:
     """影像處理演算法服務類別"""
@@ -15,7 +12,6 @@ class ImageProcessor:
         rows = kernel_str.split(";")
         kernel_matrix = [[float(x.strip()) for x in row.split(",")] for row in rows]
         kernel = np.array(kernel_matrix, dtype=np.float32)
-
         if kernel.shape[0] != kernel.shape[1] or kernel.shape[0] % 2 == 0:
             raise ValueError("卷積核必須是奇數尺寸的正方形矩陣 (例如 3x3, 5x5)。")
         return kernel
@@ -31,7 +27,7 @@ class ImageProcessor:
 
     @staticmethod
     def calculate_psnr(img1: np.ndarray, img2: np.ndarray) -> float:
-        """計算兩張影像之間的峰值訊號對雜訊比 (PSNR, Peak Signal-to-Noise Ratio)。"""
+        """計算兩張影像之間的 PSNR。"""
         img1_f = img1.astype(np.float64)
         img2_f = img2.astype(np.float64)
         mse = np.mean((img1_f - img2_f) ** 2)
@@ -39,38 +35,36 @@ class ImageProcessor:
             return float("inf")
         return 20 * math.log10(255.0 / math.sqrt(mse))
 
-    @staticmethod
-    def plot_single_histogram(channel_data: np.ndarray, color_str: str, title: str):
-        # 明確建立獨立的 figure 物件
-        fig, ax = plt.subplots(figsize=(4, 2.5))
-        
-        # 確保顏色字串是合法的
-        valid_color = color_str if color_str in ['red', 'green', 'blue', 'gray', 'purple'] else 'blue'
-        
-        # 計算直方圖 (0~255)
-        hist = cv2.calcHist([channel_data], [0], None, [256], [0, 256]).flatten()
-        
-        ax.plot(hist, color=valid_color, linewidth=1)
-        ax.fill_between(range(256), hist, color=valid_color, alpha=0.3)
-        ax.set_title(title, fontsize=10)
-        ax.set_xlim([0, 256])
-        ax.set_xlabel("Pixel Intensity", fontsize=8)
-        ax.set_ylabel("Count", fontsize=8)
-        ax.tick_params(axis='both', which='major', labelsize=8)
-        
-        fig.tight_layout()
-        return fig
+    # --- 新增模組化函式 ---
 
     @staticmethod
-    def plot_rgb_histogram(img_rgb: np.ndarray) -> plt.Figure:
-        """繪製三通道 (RGB) 影像的強度直方圖重疊圖。"""
-        fig, ax = plt.subplots(figsize=(6, 3))
-        colors = ("r", "g", "b")
-        for i, color in enumerate(colors):
-            hist = cv2.calcHist([img_rgb], [i], None, [256], [0, 256])
-            ax.plot(hist, color=color, alpha=0.7, label=color.upper())
-        ax.set_title("RGB Color Histogram")
-        ax.set_xlim([0, 256])
-        ax.legend()
-        fig.tight_layout()
-        return fig
+    def calc_histogram(channel: np.ndarray) -> np.ndarray:
+        """計算單通道 256 階直方圖資料陣列。"""
+        hist, _ = np.histogram(channel, bins=256, range=[0, 256])
+        return hist
+
+    @staticmethod
+    def split_rgb_channels(img_rgb: np.ndarray) -> dict:
+        """拆解 RGB 影像，回傳用於計算直方圖的原始通道與用於 UI 渲染的單色 3 通道影像。"""
+        result = {}
+        names = ["R", "G", "B"]
+        for idx, name in enumerate(names):
+            ch = img_rgb[:, :, idx]
+            colored_img = np.zeros_like(img_rgb)
+            colored_img[:, :, idx] = ch
+            result[name] = {"channel": ch, "image": colored_img}
+        return result
+
+    @staticmethod
+    def split_yuv_channels(img_rgb: np.ndarray) -> dict:
+        """將 RGB 轉為 YUV，回傳原始通道資料與正規化後的 3 通道灰階渲染影像。"""
+        img_yuv = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2YUV)
+        y, u, v = cv2.split(img_yuv)
+        result = {}
+        for name, ch in zip(["Y", "U", "V"], [y, u, v]):
+            # Y 亮度保持原樣，U、V 色差則作正規化拉伸強化對比度
+            vis = ch if name == "Y" else cv2.normalize(ch, None, 0, 255, cv2.NORM_MINMAX)
+            # 轉換為標準 3 通道灰階供前端渲染
+            gray_3ch = np.dstack((vis, vis, vis))
+            result[name] = {"channel": ch, "image": gray_3ch}
+        return result
