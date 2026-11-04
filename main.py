@@ -8,8 +8,6 @@ from components.color_histogram import render_color_histogram_section
 from components.convolution_psnr import render_convolution_psnr_section
 from components.face_detection_ui import render_face_detection_section
 
-st.write("App 成功啟動！")
-
 # 全域設定
 st.set_page_config(page_title="基於 AI 輔助之互動式影像處理與人臉分析工具", layout="wide")
 st.title("互動式影像處理與人臉分析工具")

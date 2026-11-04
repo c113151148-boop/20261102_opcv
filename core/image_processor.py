@@ -35,8 +35,6 @@ class ImageProcessor:
             return float("inf")
         return 20 * math.log10(255.0 / math.sqrt(mse))
 
-    # --- 新增模組化函式 ---
-
     @staticmethod
     def calc_histogram(channel: np.ndarray) -> np.ndarray:
         """計算單通道 256 階直方圖資料陣列。"""
