@@ -16,7 +16,7 @@ def render_color_histogram_section(img_rgb: np.ndarray):
     if color_space == "原始影像 (RGB)":
         col_img, col_hist = st.columns(2)
         with col_img:
-            st.image(img_rgb, caption="RGB 影像", use_container_width=True)
+            st.image(img_rgb, caption="RGB 影像", use_container_width=True, key="img_main_rgb")
         with col_hist:
             r_hist, _ = np.histogram(img_rgb[:, :, 0], bins=256, range=[0, 256])
             g_hist, _ = np.histogram(img_rgb[:, :, 1], bins=256, range=[0, 256])
@@ -28,7 +28,7 @@ def render_color_histogram_section(img_rgb: np.ndarray):
     elif color_space == "R/G/B 分離頻道":
         r, g, b = cv2.split(img_rgb)
         
-        # 1. 顯式創建 3 個獨立的 RGB 彩色影像矩陣，確保絕不相互干擾
+        # 顯式建構彩色 3 通道矩陣
         img_r = np.zeros_like(img_rgb)
         img_r[:, :, 0] = r
         
@@ -43,13 +43,13 @@ def render_color_histogram_section(img_rgb: np.ndarray):
         labels = ["R 通道", "G 通道", "B 通道"]
         hex_colors = ["#FF4B4B", "#21C354", "#0068C9"]
         
-        # 第一排：專門渲染 3 張單獨色彩通道圖片
+        # 第一排：通道圖片 (加上帶有 mode 字樣的獨立 key，強制前端刷新 DOM)
         img_cols = st.columns(3)
-        for col, ch_img, label in zip(img_cols, rgb_imgs, labels):
+        for i, (col, ch_img, label) in enumerate(zip(img_cols, rgb_imgs, labels)):
             with col:
-                st.image(ch_img, caption=label, use_container_width=True)
+                st.image(ch_img, caption=label, use_container_width=True, key=f"img_rgb_split_{i}")
         
-        # 第二排：專門渲染 3 張原生直方圖
+        # 第二排：直方圖
         hist_cols = st.columns(3)
         for col, ch_data, label_name, hex_color in zip(hist_cols, channels, ["R", "G", "B"], hex_colors):
             with col:
@@ -61,10 +61,8 @@ def render_color_histogram_section(img_rgb: np.ndarray):
         img_yuv = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2YUV)
         y, u, v = cv2.split(img_yuv)
         
-        # 對 Y (亮度)、U (色差)、V (色差) 分別進行獨立灰階矩陣建構
         y_gray = np.stack((y, y, y), axis=-1)
         
-        # 對 U/V 進行對比度拉伸強化視覺效果
         u_norm = cv2.normalize(u, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
         u_gray = np.stack((u_norm, u_norm, u_norm), axis=-1)
         
@@ -76,13 +74,13 @@ def render_color_histogram_section(img_rgb: np.ndarray):
         yuv_labels = ["Y (亮度)", "U (色差)", "V (色差)"]
         hex_colors = ["#808080", "#0068C9", "#FF4B4B"]
         
-        # 第一排：專門渲染 3 張 YUV 通道圖片
+        # 第一排：YUV 通道圖片 (同樣加上 yuv 獨立 key)
         img_cols = st.columns(3)
-        for col, ch_img, label in zip(img_cols, yuv_imgs, yuv_labels):
+        for i, (col, ch_img, label) in enumerate(zip(img_cols, yuv_imgs, yuv_labels)):
             with col:
-                st.image(ch_img, caption=label, use_container_width=True)
+                st.image(ch_img, caption=label, use_container_width=True, key=f"img_yuv_split_{i}")
                 
-        # 第二排：專門渲染 3 張 YUV 直方圖
+        # 第二排：YUV 直方圖
         hist_cols = st.columns(3)
         for col, ch_data, label, hex_color in zip(hist_cols, channels, yuv_labels, hex_colors):
             with col:
