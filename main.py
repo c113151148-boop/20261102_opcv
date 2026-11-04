@@ -1,5 +1,5 @@
 # 主程式
-
+st.write("App 成功啟動！")
 import cv2
 import numpy as np
 import streamlit as st
