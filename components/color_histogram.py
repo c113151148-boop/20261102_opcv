@@ -10,13 +10,14 @@ def render_color_histogram_section(img_rgb: np.ndarray):
     color_space = st.selectbox(
         "選擇檢視模式", 
         ["原始影像 (RGB)", "R/G/B 分離頻道", "YUV 色彩空間"],
-        key="color_space_selector"
+        key="color_space_selector"  # selectbox 支援 key
     )
 
     if color_space == "原始影像 (RGB)":
         col_img, col_hist = st.columns(2)
         with col_img:
-            st.image(img_rgb, caption="RGB 影像", use_container_width=True, key="img_main_rgb")
+            # 移除 key 參數，避免 TypeError
+            st.image(img_rgb, caption="RGB 影像", use_container_width=True)
         with col_hist:
             r_hist, _ = np.histogram(img_rgb[:, :, 0], bins=256, range=[0, 256])
             g_hist, _ = np.histogram(img_rgb[:, :, 1], bins=256, range=[0, 256])
@@ -43,11 +44,11 @@ def render_color_histogram_section(img_rgb: np.ndarray):
         labels = ["R 通道", "G 通道", "B 通道"]
         hex_colors = ["#FF4B4B", "#21C354", "#0068C9"]
         
-        # 第一排：通道圖片 (加上帶有 mode 字樣的獨立 key，強制前端刷新 DOM)
+        # 第一排：通道圖片 (移除 st.image 中的 key)
         img_cols = st.columns(3)
-        for i, (col, ch_img, label) in enumerate(zip(img_cols, rgb_imgs, labels)):
+        for col, ch_img, label in zip(img_cols, rgb_imgs, labels):
             with col:
-                st.image(ch_img, caption=label, use_container_width=True, key=f"img_rgb_split_{i}")
+                st.image(ch_img, caption=label, use_container_width=True)
         
         # 第二排：直方圖
         hist_cols = st.columns(3)
@@ -74,11 +75,11 @@ def render_color_histogram_section(img_rgb: np.ndarray):
         yuv_labels = ["Y (亮度)", "U (色差)", "V (色差)"]
         hex_colors = ["#808080", "#0068C9", "#FF4B4B"]
         
-        # 第一排：YUV 通道圖片 (同樣加上 yuv 獨立 key)
+        # 第一排：YUV 通道圖片 (移除 st.image 中的 key)
         img_cols = st.columns(3)
-        for i, (col, ch_img, label) in enumerate(zip(img_cols, yuv_imgs, yuv_labels)):
+        for col, ch_img, label in zip(img_cols, yuv_imgs, yuv_labels):
             with col:
-                st.image(ch_img, caption=label, use_container_width=True, key=f"img_yuv_split_{i}")
+                st.image(ch_img, caption=label, use_container_width=True)
                 
         # 第二排：YUV 直方圖
         hist_cols = st.columns(3)
