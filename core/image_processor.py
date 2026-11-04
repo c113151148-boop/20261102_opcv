@@ -40,14 +40,24 @@ class ImageProcessor:
         return 20 * math.log10(255.0 / math.sqrt(mse))
 
     @staticmethod
-    def plot_single_histogram(img_channel: np.ndarray, color: str, title: str) -> plt.Figure:
-        """繪製單一通道影像的直方圖。"""
-        fig, ax = plt.subplots(figsize=(4, 2))
-        ax.hist(img_channel.ravel(), bins=256, range=[0, 256], color=color, alpha=0.7)
-        ax.set_title(title)
+    def plot_single_histogram(channel_data: np.ndarray, color_str: str, title: str):
+        # 明確建立獨立的 figure 物件
+        fig, ax = plt.subplots(figsize=(4, 2.5))
+        
+        # 確保顏色字串是合法的
+        valid_color = color_str if color_str in ['red', 'green', 'blue', 'gray', 'purple'] else 'blue'
+        
+        # 計算直方圖 (0~255)
+        hist = cv2.calcHist([channel_data], [0], None, [256], [0, 256]).flatten()
+        
+        ax.plot(hist, color=valid_color, linewidth=1)
+        ax.fill_between(range(256), hist, color=valid_color, alpha=0.3)
+        ax.set_title(title, fontsize=10)
         ax.set_xlim([0, 256])
-        ax.set_xlabel("Pixel Intensity")
-        ax.set_ylabel("Count")
+        ax.set_xlabel("Pixel Intensity", fontsize=8)
+        ax.set_ylabel("Count", fontsize=8)
+        ax.tick_params(axis='both', which='major', labelsize=8)
+        
         fig.tight_layout()
         return fig
 
