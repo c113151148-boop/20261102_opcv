@@ -59,7 +59,7 @@ class ImageProcessor:
         for i, color in enumerate(colors):
             hist = cv2.calcHist([img_rgb], [i], None, [256], [0, 256])
             ax.plot(hist, color=color, alpha=0.7, label=color.upper())
-        ax.set_title("RGB 直方圖")
+        ax.set_title("RGB Color Histogram")
         ax.set_xlim([0, 256])
         ax.legend()
         fig.tight_layout()
