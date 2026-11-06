@@ -14,7 +14,7 @@ def render_image_info_section(img_rgb, file_size):
     h, w, c = img_rgb.shape
 
     # 顯示
-    col1, col2 = st.columns([1.2, 1])
+    col1, col_space, col2 = st.columns([1.2, 0.2, 1])
     with col1:
         st.markdown(
             """
@@ -26,7 +26,7 @@ def render_image_info_section(img_rgb, file_size):
                 height: 100%;
             }
             .centered-image-container img {
-                max-height: 300px !important;
+                max-height: 150px !important;
                 width: auto !important;
                 object-fit: contain;
                 border-radius: 8px;
@@ -39,15 +39,17 @@ def render_image_info_section(img_rgb, file_size):
         st.image(img_rgb, caption="原始影像", use_container_width=False)
         st.markdown('</div>', unsafe_allow_html=True)
 
-    with col2:
+    with col_space:
+        st.empty()
 
+    with col2:
         st.subheader("影像中繼資訊")
         st.markdown("---")
         
         m_col1, m_col2 = st.columns(2)
         with m_col1:
             st.metric(label="影像解析度", value=f"{w} px")
-            st.metric(label="色彩維度", value=f"{c} 頻道")
+            st.metric(label="色彩維度", value=f"{c}")
         with m_col2:
             st.metric(label="影像高度", value=f"{h} px")
             st.metric(label="檔案大小", value=f"{file_size / 1024:.2f} KB")
