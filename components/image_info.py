@@ -49,7 +49,7 @@ def render_image_info_section(img_rgb, file_size):
         
         m_col1, m_col2 = st.columns(2)
         with m_col1:
-            st.metric(label="影像解析度", value=f"{w} px")
+            st.metric(label="影像寬度", value=f"{w} px")
             st.metric(label="色彩維度", value=f"{c}")
         with m_col2:
             st.metric(label="影像高度", value=f"{h} px")
