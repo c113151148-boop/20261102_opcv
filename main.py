@@ -35,6 +35,8 @@ with st.sidebar:
         st.image(img_rgb, caption="目前載入之影像", use_container_width=True)
 
 if img_rgb is not None:
+    st.info(f"**影像上傳成功 :D**")
+
     # 渲染各個功能模組 UI
     st.markdown("---")
     render_image_info_section(img_rgb, uploaded_file.size)

@@ -11,6 +11,7 @@ def render_image_info_section(img_rgb, file_size):
         ile_size (int): 影像檔案大小
     """
     st.header("功能 1: 影像載入與基礎解析")
+    st.markdown("---")
     h, w, c = img_rgb.shape
 
     # 顯示
@@ -23,13 +24,15 @@ def render_image_info_section(img_rgb, file_size):
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                height: 100%;
+                height: 200px;
+                background-color: rgba(255, 255, 255, 0.02);
+                border-radius: 8px;
             }
             .centered-image-container img {
                 max-height: 150px !important;
                 width: auto !important;
                 object-fit: contain;
-                border-radius: 8px;
+                border-radius: 6px;
             }
             </style>
             """,
@@ -43,6 +46,7 @@ def render_image_info_section(img_rgb, file_size):
         st.empty()
 
     with col2:
+        st.markdown('<div style="margin-top: 15px;">', unsafe_allow_html=True)
         st.subheader("影像中繼資訊")
         st.markdown("---")
         
