@@ -10,7 +10,7 @@ def render_image_info_section(img_rgb, file_size):
         img_rgb (np.ndarray): RGB 影像
         ile_size (int): 影像檔案大小
     """
-    st.header("功能 1: 影像載入與基礎解析")
+    st.header("功能 1: 影像基本中繼資訊")
     h, w, c = img_rgb.shape
 
     # 顯示

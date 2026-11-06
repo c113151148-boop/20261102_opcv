@@ -1,5 +1,3 @@
-# 組態設定
-
 from pathlib import Path
 
 # 檔案路徑設定
