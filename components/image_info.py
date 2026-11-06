@@ -12,13 +12,52 @@ def render_image_info_section(img_rgb, file_size):
     """
     st.header("功能 1: 影像載入與基礎解析")
     h, w, c = img_rgb.shape
-    
-    col1, col2 = st.columns(2)
+
+    # 顯示
+    col1, col2 = st.columns([1.2, 1])
     with col1:
-        st.image(img_rgb, caption="原始影像", use_container_width=True)
+        st.markdown(
+            """
+            <style>
+            .centered-image-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+            }
+            .centered-image-container img {
+                max-height: 300px !important;
+                width: auto !important;
+                object-fit: contain;
+                border-radius: 8px;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+        st.markdown('<div class="centered-image-container">', unsafe_allow_html=True)
+        st.image(img_rgb, caption="原始影像", use_container_width=False)
+        st.markdown('</div>', unsafe_allow_html=True)
+
     with col2:
+
         st.subheader("影像中繼資訊")
-        st.write(f"**解析度 (寬 x 高):** {w} x {h} pixels")
-        st.write(f"**色彩維度:** {c}")
-        st.write(f"**檔案大小:** {file_size / 1024:.2f} KB")
-        st.write(f"**資料型態:** {img_rgb.dtype}")
+        st.markdown("---")
+        
+        m_col1, m_col2 = st.columns(2)
+        with m_col1:
+            st.metric(label="影像解析度", value=f"{w} px")
+            st.metric(label="色彩維度", value=f"{c} 頻道")
+        with m_col2:
+            st.metric(label="影像高度", value=f"{h} px")
+            st.metric(label="檔案大小", value=f"{file_size / 1024:.2f} KB")
+        
+        st.markdown(
+            f"""
+            <div style="background-color: rgba(128, 128, 128, 0.1); padding: 10px; border-radius: 6px; margin-top: 10px;">
+                <span style="font-size: 14px; color: gray;">資料型態 (dtype)：</span>
+                <span style="font-size: 14px; font-weight: bold;">{img_rgb.dtype}</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
