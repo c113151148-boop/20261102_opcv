@@ -11,7 +11,6 @@ def render_image_info_section(img_rgb, file_size):
         ile_size (int): 影像檔案大小
     """
     st.header("功能 1: 影像載入與基礎解析")
-    st.markdown("---")
     h, w, c = img_rgb.shape
 
     # 顯示
