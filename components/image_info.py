@@ -15,7 +15,7 @@ def render_image_info_section(img_rgb, file_size):
     h, w, c = img_rgb.shape
 
     # 顯示
-    col1, col_space, col2 = st.columns([1.2, 0.2, 1])
+    col1, col_space, col2 = st.columns([1.2, 0.1, 1])
     with col1:
         st.markdown(
             """
@@ -44,7 +44,7 @@ def render_image_info_section(img_rgb, file_size):
         st.empty()
 
     with col2:
-        st.markdown('<div style="margin-top: 15px;">', unsafe_allow_html=True)
+        st.markdown('<div style="margin-top: 20px;">', unsafe_allow_html=True)
         st.subheader("影像中繼資訊")
         st.markdown("---")
         
