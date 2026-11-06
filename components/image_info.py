@@ -24,25 +24,13 @@ def render_image_info_section(img_rgb, file_size):
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                height: 220px;
-                background-color: rgba(255, 255, 255, 0.02);
-                border-radius: 8px;
-                overflow: hidden;
-            }
-            .centered-image-container > div, 
-            .centered-image-container div[data-testid="stImage"] {
-                display: flex !important;
-                justify-content: center !important;
-                align-items: center !important;
-                width: 100% !important;
-                height: 100% !important;
+                height: 100%;
             }
             .centered-image-container img {
                 max-height: 150px !important;
                 width: auto !important;
                 object-fit: contain;
-                border-radius: 6px;
-                margin: auto !important;
+                border-radius: 8px;
             }
             </style>
             """,
