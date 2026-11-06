@@ -36,13 +36,16 @@ with st.sidebar:
 
 if img_rgb is not None:
     # 渲染各個功能模組 UI
+    st.markdown("---")
     render_image_info_section(img_rgb, uploaded_file.size)
-    st.markdown("---")
 
+    st.markdown("---")
     render_color_histogram_section(img_rgb)
-    st.markdown("---")
 
+    st.markdown("---")
     render_convolution_psnr_section(img_rgb)
-    st.markdown("---")
 
+    st.markdown("---")
     render_face_detection_section(img_rgb)
+else:
+    st.info(f"**請先於側邊欄上傳您想分析的圖片**")
