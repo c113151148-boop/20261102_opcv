@@ -1,14 +1,12 @@
-# 主程式
-import cv2
-import numpy as np
 import streamlit as st
+import numpy as np
+import cv2
 
 from components.image_info import render_image_info_section
 from components.color_histogram import render_color_histogram_section
 from components.convolution_psnr import render_convolution_psnr_section
 from components.face_detection_ui import render_face_detection_section
 
-# 全域設定
 st.set_page_config(page_title="基於 AI 輔助之互動式影像處理與人臉分析工具", layout="wide")
 st.title("互動式影像處理與人臉分析工具")
 
@@ -19,11 +17,11 @@ if uploaded_file is not None:
     # 讀取影像
     file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
     img_bgr = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-
     if img_bgr is None:
         st.error("無法讀取影像，請確認檔案格式是否正確。")
         st.stop()
-
+    
+    # 轉換為 RGB 影像
     img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
 
     # 渲染各個功能模組 UI
