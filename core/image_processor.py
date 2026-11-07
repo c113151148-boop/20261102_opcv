@@ -5,28 +5,28 @@ import numpy as np
 class ImageProcessor:
     """影像處理工具類別"""
 
-    @staticmethod
-    def parse_kernel(kernel_str):
-        """將以字串表示的卷積核轉成 2 維 Numpy 陣列格式
+    # @staticmethod
+    # def parse_kernel(kernel_str):
+    #     """將以字串表示的卷積核轉成 2 維 Numpy 陣列格式
 
-        Args:
-            kernel_str (str): 以字串表示的卷積核 (e.g., 0,-1,0;-1,5,-1;0,-1,0)
+    #     Args:
+    #         kernel_str (str): 以字串表示的卷積核 (e.g., 0,-1,0;-1,5,-1;0,-1,0)
 
-        Returns:
-            np.ndarray: 轉換後的 2 維 Numpy 陣列
-        """
-        # 切分轉換成 2 維 List
-        rows = kernel_str.split(";")
-        kernel_matrix = [[float(x.strip()) for x in row.split(",")] for row in rows]
+    #     Returns:
+    #         np.ndarray: 轉換後的 2 維 Numpy 陣列
+    #     """
+    #     # 切分轉換成 2 維 List
+    #     rows = kernel_str.split(";")
+    #     kernel_matrix = [[float(x.strip()) for x in row.split(",")] for row in rows]
 
-        # 將 List 轉為 ndarray
-        kernel = np.array(kernel_matrix, dtype=np.float32)
+    #     # 將 List 轉為 ndarray
+    #     kernel = np.array(kernel_matrix, dtype=np.float32)
 
-        # 檢查卷積核格式
-        if kernel.shape[0] != kernel.shape[1] or kernel.shape[0] % 2 == 0:
-            raise ValueError("卷積核必須是奇數尺寸的方陣 (例如 3x3, 5x5)。")
+    #     # 檢查卷積核格式
+    #     if kernel.shape[0] != kernel.shape[1] or kernel.shape[0] % 2 == 0:
+    #         raise ValueError("卷積核必須是奇數尺寸的方陣 (例如 3x3, 5x5)。")
 
-        return kernel
+    #     return kernel
 
     @staticmethod
     def apply_convolution(img_rgb, kernel, normalize=False):
