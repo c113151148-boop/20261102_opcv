@@ -68,7 +68,7 @@ class ImageProcessor:
 
         # 計算 MSE
         mse = np.mean((img1_f - img2_f) ** 2)
-        if mse == 0:
+        if mse < 1e-10:
             return float("inf")
 
         # 計算 psnr

@@ -40,8 +40,13 @@ def render_convolution_psnr_section(img_rgb: np.ndarray):
     with c_size:
         # 卷積核尺寸通常必須是奇數，才能有明確的中心點
         k_size = st.number_input("設定卷積核大小 (N)", min_value=3, max_value=15, step=2, value=3)
+        
+        # 防呆：如果使用者手動鍵盤輸入了偶數，自動 +1 轉成奇數
+        if k_size % 2 == 0:
+            k_size += 1
+            st.warning(f"卷積核尺寸必須為奇數，已自動為您調整為 {k_size}")
 
-    # 根據選擇的尺寸與模板，動態數學生成預設矩陣
+    # 根據選擇的尺寸與模板，動態生成預設矩陣
     if preset == "邊緣銳化 (Edge Sharpening)":
         # 產生周圍全為 -1，中心點為 N^2 的矩陣 (總和為 1)
         default_kernel = np.full((k_size, k_size), -1.0)
