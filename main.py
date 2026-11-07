@@ -12,10 +12,10 @@ st.title("互動式影像處理與人臉分析工具")
 
 img_rgb = None
 
-# 檔案上傳
+st.sidebar.title("上傳影像檔案")
 with st.sidebar:
-    st.header("設定與控制區")
-    uploaded_file = st.file_uploader("上傳影像檔 (PNG, JPG, BMP)", type=["png", "jpg", "jpeg", "bmp"])
+    # 檔案上傳
+    uploaded_file = st.file_uploader("上傳影像檔案 (PNG, JPG/JPEG, BMP)", type=["png", "jpg", "jpeg", "bmp"])
 
     if uploaded_file is not None:
         # 讀取影像
@@ -50,4 +50,4 @@ if img_rgb is not None:
     st.markdown("---")
     render_face_detection_section(img_rgb)
 else:
-    st.info(f"**請先於側邊欄上傳您想分析的圖片**")
+    st.info(f"**請先於側邊欄上傳您想分析的圖片。**")

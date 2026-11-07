@@ -48,7 +48,7 @@ class ImageProcessor:
         if mse < 1e-10:
             return float("inf")
 
-        # 計算 psnr
+        # 計算 PSNR
         psnr = 20 * math.log10(255.0 / math.sqrt(mse))
         
         return psnr

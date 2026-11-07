@@ -31,7 +31,7 @@ def render_color_histogram_section(img_rgb_input):
     Args:
         img_rgb_input (np.ndarray): RGB 影像
     """
-    st.header("功能 2: 多色彩空間與直方圖")
+    st.header("功能 2: 多色彩空間轉換與同步直方圖分析")
     
     img_rgb = np.copy(img_rgb_input)
     
@@ -44,7 +44,7 @@ def render_color_histogram_section(img_rgb_input):
             col_img, col_hist = st.columns(2)
 
             with col_img:
-                st.image(img_rgb, caption="RGB 影像", use_container_width=True)
+                st.image(img_rgb, caption="原始影像 (Original)", use_container_width=True)
 
             with col_hist:
                 # 取得各通道直方圖數據
@@ -55,8 +55,8 @@ def render_color_histogram_section(img_rgb_input):
                 # 整理成 DataFrame
                 df_hist = pd.DataFrame({"R": r_h, "G": g_h, "B": b_h})
 
-                # 顯示直方圖
-                st.caption("RGB 直方圖 (Intensity vs Count)")
+                # 顯示折線圖
+                st.caption("RGB 折線圖 (Intensity vs Count)")
                 st.line_chart(df_hist, color=["#FF0000", "#00FF00", "#0000FF"])
 
     elif color_space == "RGB 各分量獨立檢視":
@@ -78,5 +78,5 @@ def render_color_histogram_section(img_rgb_input):
             # 靜態展開渲染
             c1, c2, c3 = st.columns(3)
             _render_channel(c1, chs["Y"]["image"], "Y (亮度)", chs["Y"]["channel"], "#808080")
-            _render_channel(c2, chs["U"]["image"], "U (色差)", chs["U"]["channel"], "#0068C9")
-            _render_channel(c3, chs["V"]["image"], "V (色差)", chs["V"]["channel"], "#FF4B4B")
+            _render_channel(c2, chs["U"]["image"], "U (色度)", chs["U"]["channel"], "#0068C9")
+            _render_channel(c3, chs["V"]["image"], "V (飽和度)", chs["V"]["channel"], "#FF4B4B")

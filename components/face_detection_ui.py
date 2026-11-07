@@ -3,16 +3,18 @@ import numpy as np
 from config import MODEL_PATH, DEFAULT_CONFIDENCE
 from core.face_detector import FaceDetectorService
 
-def render_face_detection_section(img_rgb: np.ndarray):
+def render_face_detection_section(img_rgb_input):
     """
     1. 整合 MediaPipe Face Detection 偵測影像中的人臉
     2. 在影像上標註偵測到的人臉與信心度並顯示
 
     Args:
-        img_rgb (np.ndarray): RGB 影像
+        img_rgb_input (np.ndarray): RGB 影像
     """
     st.header("功能 4: 人臉偵測 (MediaPipe Face Detection)")
     min_confidence = st.slider("最低信心度閾值", min_value=0.1, max_value=1.0, value=DEFAULT_CONFIDENCE, step=0.05)
+
+    img_rgb = np.copy(img_rgb_input)
 
     try:
         # 建立人臉偵測模型服務實例

@@ -18,7 +18,7 @@ def generate_gaussian_kernel(k_size):
     return np.round(kernel, 4)
 
 
-def render_convolution_psnr_section(img_rgb: np.ndarray):
+def render_convolution_psnr_section(img_rgb_input):
     """Streamlit 介面 3
 
     1. 提供使用者輸入一組任意數值的二維陣列 (卷積核)，並可選擇是否正規化
@@ -26,20 +26,21 @@ def render_convolution_psnr_section(img_rgb: np.ndarray):
     3. 計算並顯示兩個影像間的 PSNR 值
 
     Args:
-        img_rgb (np.ndarray): RGB 影像
+        img_rgb_input (np.ndarray): RGB 影像
     """
-    st.header("功能 3: 自訂卷積核與 PSNR 計算")
+    st.header("功能 3: 自訂卷積核 (Kernel Matrix) 空間濾波與量化評估 (PSNR)")
 
     # 提供模板選擇與尺寸設定
     c_preset, c_size = st.columns([2, 1])
     with c_preset:
         preset = st.selectbox(
-            "選擇卷積核模板或完全自訂", 
-            ["自訂 (Custom)", "邊緣銳化 (Edge Sharpening)", "高斯平滑 (Gaussian Blur)", "浮雕 (Emboss)", "均值平滑 (Mean Blur)"]
+            "選擇卷積核模板或自訂", 
+            ["邊緣銳化 (Edge Sharpening)", "高斯平滑 (Gaussian Blur)", "浮雕 (Emboss)", "均值平滑 (Mean Blur)", "自訂 (Custom)"]
         )
+
     with c_size:
         # 卷積核尺寸通常必須是奇數，才能有明確的中心點
-        k_size = st.number_input("設定卷積核大小 (N)", min_value=3, max_value=15, step=2, value=3)
+        k_size = st.number_input("設定卷積核大小 (N x N)", min_value=3, max_value=15, step=2, value=3)
         
         # 防呆：如果使用者手動鍵盤輸入了偶數，自動 +1 轉成奇數
         if k_size % 2 == 0:
@@ -70,7 +71,7 @@ def render_convolution_psnr_section(img_rgb: np.ndarray):
         default_kernel = np.ones((k_size, k_size), dtype=float)
 
     else:
-        # 完全自訂模式 (預設為 Identity 矩陣，僅中心為 1)
+        # 完全自訂模式 (預設為卷積單位矩陣)
         default_kernel = np.zeros((k_size, k_size), dtype=float)
         default_kernel[k_size//2, k_size//2] = 1.0
 
@@ -84,6 +85,8 @@ def render_convolution_psnr_section(img_rgb: np.ndarray):
     default_norm = True if "Blur" in preset else False
     normalize = st.checkbox("是否正規化 (各項數值除以矩陣總和)", value=default_norm)
 
+    img_rgb = np.copy(img_rgb_input)
+
     try:
         # 進行卷積運算
         filtered_img = ImageProcessor.apply_convolution(img_rgb, kernel, normalize=normalize)
@@ -96,7 +99,7 @@ def render_convolution_psnr_section(img_rgb: np.ndarray):
         with c1:
             st.image(img_rgb, caption="原始影像", use_container_width=True)
         with c2:
-            st.image(filtered_img, caption="濾波後影像", use_container_width=True)
+            st.image(filtered_img, caption="卷積濾波運算後影像", use_container_width=True)
 
         # 顯示 PSNR 值
         if math.isinf(psnr_val):

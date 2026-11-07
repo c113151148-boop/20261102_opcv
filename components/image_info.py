@@ -1,16 +1,18 @@
 import streamlit as st
 import numpy as np
 
-def render_image_info_section(img_rgb, file_size):
+def render_image_info_section(img_rgb_input, file_size):
     """Streamlit 介面 1
 
     顯示原始影像與基本中繼資訊
 
     Args:
-        img_rgb (np.ndarray): RGB 影像
+        img_rgb_input (np.ndarray): RGB 影像
         ile_size (int): 影像檔案大小
     """
     st.header("功能 1: 影像基本中繼資訊")
+
+    img_rgb = np.copy(img_rgb_input)
     h, w, c = img_rgb.shape
 
     # 顯示
@@ -55,12 +57,12 @@ def render_image_info_section(img_rgb, file_size):
             st.metric(label="影像高度", value=f"{h} px")
             st.metric(label="檔案大小", value=f"{file_size / 1024:.2f} KB")
         
-        st.markdown(
-            f"""
-            <div style="background-color: rgba(128, 128, 128, 0.1); padding: 10px; border-radius: 6px; margin-top: 10px;">
-                <span style="font-size: 14px; color: gray;">資料型態 (dtype)：</span>
-                <span style="font-size: 14px; font-weight: bold;">{img_rgb.dtype}</span>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+    st.markdown(
+        f"""
+        <div style="background-color: rgba(128, 128, 128, 0.1); padding: 10px; border-radius: 6px; margin-top: 10px;">
+            <span style="font-size: 14px; color: gray;">資料型態 (dtype)：</span>
+            <span style="font-size: 14px; font-weight: bold;">{img_rgb.dtype}</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
